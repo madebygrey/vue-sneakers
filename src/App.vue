@@ -1,7 +1,41 @@
 <script setup>
+	import { ref, onMounted, watch, reactive } from "vue";
+	import axios from "axios";
+
 	import TheHeader from "./components/TheHeader.vue";
 	import TheCardList from "./components/TheCardList.vue";
 	import TheDrawer from "./components/TheDrawer.vue";
+
+	const products = ref([]);
+
+	const filters = reactive({
+		sortBy: "title",
+		searchQuery: "",
+	});
+
+	const fetchItems = async () => {
+		try {
+			const params = {
+				sortBy: filters.sortBy,
+			};
+			if (filters.searchQuery) {
+				params.title = `*${filters.searchQuery}*`;
+			}
+			const { data } = await axios.get(
+				"https://604781a0efa572c1.mokky.dev/items",
+				{
+					params,
+				}
+			);
+			products.value = data;
+		} catch (err) {
+			console.log(err);
+		}
+	};
+
+	onMounted(fetchItems);
+
+	watch(filters, fetchItems);
 </script>
 
 <template>
@@ -12,14 +46,18 @@
 			<div class="flex justify-between items-center">
 				<h2 class="text-3xl font-bold mb-8">Все кроссовки</h2>
 				<div class="flex gap-4">
-					<select class="py-2 px-3 border rounded-md outline-none">
-						<option>По названию</option>
-						<option>По цене (дешевые)</option>
-						<option>По цене (дорогие)</option>
+					<select
+						@change="filters.sortBy = $event.target.value"
+						class="py-2 px-3 border rounded-md outline-none">
+						<option value="name">По названию</option>
+						<option value="price">По цене (дешевые)</option>
+						<option value="-price">По цене (дорогие)</option>
 					</select>
 					<div class="relative">
 						<img src="/search.svg" class="absolute left-4 top-3" alt="" />
 						<input
+							v-model="filters.searchQuery"
+							@input="filters.searchQuery = $event.target.value"
 							class="border rounded-md py-2 pl-12 pr-4 outline-none focus:border-gray-400"
 							type="text"
 							placeholder="Поиск..." />
@@ -27,7 +65,7 @@
 				</div>
 			</div>
 
-			<TheCardList />
+			<TheCardList :items="products" class="mt-10" />
 		</div>
 	</div>
 </template>

@@ -1,19 +1,20 @@
 <script setup>
 	import TheCard from "./TheCard.vue";
 
-	const onClickAdd = () => {
-		alert("123");
-	};
+	defineProps({
+		items: Array,
+	});
 </script>
 
 <template>
 	<div class="grid grid-cols-4 gap-4">
 		<TheCard
-			title="Мужские кроссовки Nike Blazer Mid Suede"
-			imageUrl="/sneakers/sneakers-1.jpg"
-			:price="1205"
-			:isFavorite="false"
-			:onClickAdd="onClickAdd" />
+			v-for="item in items"
+			:key="item.id"
+			:title="item.title"
+			:imageUrl="item.imageUrl"
+			:price="item.price"
+			:isFavorite="false" />
 	</div>
 </template>
 

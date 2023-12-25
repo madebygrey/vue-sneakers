@@ -4,6 +4,8 @@
 	defineProps({
 		items: Array,
 	});
+
+	const emit = defineEmits(["addToFavourite"]);
 </script>
 
 <template>
@@ -11,10 +13,12 @@
 		<TheCard
 			v-for="item in items"
 			:key="item.id"
+			:id="item.id"
 			:title="item.title"
 			:imageUrl="item.imageUrl"
 			:price="item.price"
-			:isFavorite="false" />
+			:isFavorite="item.isFavorite"
+			:onClickFavorite="() => emit('addToFavourite', item)" />
 	</div>
 </template>
 

@@ -3,13 +3,14 @@
 
 	defineProps({
 		items: Array,
+		isFavorites: Boolean,
 	});
 
 	const emit = defineEmits(["addToFavourite", "addToCart"]);
 </script>
 
 <template>
-	<div class="grid grid-cols-4 gap-4">
+	<div class="grid grid-cols-4 gap-4" v-auto-animate>
 		<TheCard
 			v-for="item in items"
 			:key="item.id"
@@ -19,8 +20,8 @@
 			:price="item.price"
 			:isFavorite="item.isFavorite"
 			:isAdded="item.isAdded"
-			:onClickFavorite="() => emit('addToFavourite', item)"
-			:onClickAdd="() => emit('addToCart', item)" />
+			:onClickFavorite="isFavorites ? null : () => emit('addToFavourite', item)"
+			:onClickAdd="isFavorites ? null : () => emit('addToCart', item)" />
 	</div>
 </template>
 

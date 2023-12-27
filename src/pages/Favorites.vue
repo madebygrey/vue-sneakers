@@ -11,7 +11,7 @@
 			const { data } = await axios.get(
 				"https://604781a0efa572c1.mokky.dev/favorites?_relations=items"
 			);
-			favorites.value = data.map((obj) => (obj.item ? obj.item : []));
+			favorites.value = data.filter((obj) => obj.item).map((obj) => obj.item);
 		} catch (err) {
 			console.log(err);
 		}
